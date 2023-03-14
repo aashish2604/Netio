@@ -26,24 +26,37 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        TextButton(
-            onPressed: () async {
-              final response = await Netio()
-                  .get('https://jsonplaceholder.typicode.com/posts');
-              print(response);
-            },
-            child: const Text('Netio Get')),
-        TextButton(
-            onPressed: () async {
-              final response = await Netio()
-                  .post('https://jsonplaceholder.typicode.com/posts');
-              print(response);
-            },
-            child: const Text('Netio Post')),
-      ],
+    return Scaffold(
+      appBar: AppBar(title: const Text("Netio")),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+                onPressed: () async {
+                  final response = await Netio()
+                      .get('https://jsonplaceholder.typicode.com/posts');
+                  print(response?.body);
+                },
+                child: const Text('Netio Get')),
+            TextButton(
+                onPressed: () async {
+                  final response = await Netio().post(
+                      'https://jsonplaceholder.typicode.com/posts',
+                      body: {
+                        'title': 'foo',
+                        'body': 'bar',
+                        'userId': 1,
+                      },
+                      options: Options(headers: {
+                        'Content-type': 'application/json; charset=UTF-8'
+                      }));
+                  print(response?.body);
+                },
+                child: const Text('Netio Post')),
+          ],
+        ),
+      ),
     );
   }
 }
