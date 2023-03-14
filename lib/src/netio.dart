@@ -1,55 +1,63 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:netio/src/options.dart';
+import 'package:netio/src/response.dart';
+
 class Netio {
-  Future<String> get(String path) async {
+  /// Method used for making HTTP GET request
+  Future<Response?> get(String path, {Options? options}) async {
     Uri url = Uri.parse(path);
     try {
+      url.replace(
+        queryParameters: options?.queryParameters,
+      );
       final client = HttpClient();
       final request = await client.getUrl(url);
-      final response = await request.close();
 
-      if (response.statusCode == HttpStatus.ok) {
-        final responseBody = await response.transform(utf8.decoder).join();
-        print(responseBody);
-        return responseBody;
-      } else {
-        print('Error: ${response.statusCode}');
-        return 'error';
-      }
+      options?.headers?.forEach((key, value) {
+        request.headers.add(key, value);
+      });
+
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
+      final parsedResponse = Response.fromHttpResponse(response, responseBody);
+      return parsedResponse;
     } catch (e) {
-      print('Error: $e');
-      return 'Error';
+      return null;
     }
   }
 
-  Future<String> post(String path) async {
-    final httpClient = HttpClient();
+  /// Method used for making HTTP POST request
+  Future<Response?> post(String path,
+      {Options? options, Map<String, dynamic>? body}) async {
     Uri url = Uri.parse(path);
-
+    final httpClient = HttpClient();
     try {
-      final body = jsonEncode({
-        'title': 'foo',
-        'body': 'bar',
-        'userId': 1,
-      });
+      url.replace(
+        queryParameters: options?.queryParameters,
+      );
+      final encodedBody = jsonEncode(body);
 
       final request = await httpClient.postUrl(url);
-      request.headers.add(
-          HttpHeaders.contentTypeHeader, 'application/json; charset=UTF-8');
-      request.write(body);
+      options?.headers?.forEach((key, value) {
+        request.headers.add(key, value);
+      });
+      request.write(encodedBody);
 
       final response = await request.close();
       final responseBody = await response.transform(utf8.decoder).join();
 
-      print('Response status code: ${response.statusCode}');
-      print('Response body: $responseBody');
-      return 'Success';
+      Response parsedResponse =
+          Response.fromHttpResponse(response, responseBody);
+      return parsedResponse;
     } catch (e) {
-      print('Error occurred: $e');
-      return 'error';
+      return null;
     } finally {
       httpClient.close();
     }
   }
 }
+
+
+//TODO: Add all the option for the function call
