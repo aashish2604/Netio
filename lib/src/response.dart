@@ -20,8 +20,8 @@ class Response {
     this.errorMessage,
   });
 
-  factory Response.fromHttpResponse(
-      HttpClientResponse response, String? responseBody, Options? userOptions) {
+  factory Response.fromHttpResponse(HttpClientResponse response,
+      String? responseBody, Options? userOptions, String requestMethod) {
     HttpHeaders httpHeaders = response.headers;
     Map<String, dynamic>? responseHeader = {
       "transfer-encoding": httpHeaders.chunkedTransferEncoding,
@@ -34,15 +34,25 @@ class Response {
       "persistent-conntection": httpHeaders.persistentConnection,
       "port": httpHeaders.port
     };
-
-    Options? repsonseOptions = userOptions?.copyWith(
-        headers: responseHeader,
-        persistentConnection: response.persistentConnection,
-        contentLength: response.contentLength);
+    ;
+    late Options responseOptions;
+    if (userOptions == null) {
+      responseOptions = Options(
+          method: requestMethod,
+          headers: responseHeader,
+          persistentConnection: response.persistentConnection,
+          contentLength: response.contentLength);
+    } else {
+      responseOptions = userOptions.copyWith(
+          method: requestMethod,
+          headers: responseHeader,
+          persistentConnection: response.persistentConnection,
+          contentLength: response.contentLength);
+    }
     return Response(
         isSuccessfull: true,
         body: responseBody,
-        options: repsonseOptions,
+        options: responseOptions,
         statusCode: response.statusCode,
         statusMessage: response.reasonPhrase);
   }
