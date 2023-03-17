@@ -34,9 +34,17 @@ class HomePage extends StatelessWidget {
           children: [
             TextButton(
                 onPressed: () async {
-                  final response = await Netio()
-                      .get('https://jsonplaceholder.typicode.com/posts');
+                  final response = await Netio().get(
+                      'https://jsonplaceholder.typicode.com/posts',
+                      options: Options(
+                          maxRedirects: 2,
+                          idleTimeout: const Duration(seconds: 10)));
                   print(response?.body);
+                  print(response?.options?.contentLength);
+                  print(response?.options?.method);
+                  print(response?.errorMessage);
+                  print(response?.statusCode);
+                  print(response?.statusMessage);
                 },
                 child: const Text('Netio Get')),
             TextButton(
@@ -52,6 +60,11 @@ class HomePage extends StatelessWidget {
                         'Content-type': 'application/json; charset=UTF-8'
                       }));
                   print(response?.body);
+                  print(response?.options?.contentLength);
+                  print(response?.options?.method);
+                  print(response?.errorMessage);
+                  print(response?.statusCode);
+                  print(response?.statusMessage);
                 },
                 child: const Text('Netio Post')),
           ],
