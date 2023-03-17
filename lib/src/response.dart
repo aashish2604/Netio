@@ -8,16 +8,20 @@ class Response {
   Options? options;
   int? statusCode;
   String? statusMessage;
+  bool isSuccessfull;
+  String? errorMessage;
 
   Response({
     this.body,
     this.options,
     this.statusCode,
     this.statusMessage,
+    required this.isSuccessfull,
+    this.errorMessage,
   });
 
   factory Response.fromHttpResponse(
-      HttpClientResponse response, String? responseBody) {
+      HttpClientResponse response, String? responseBody, Options? userOptions) {
     HttpHeaders httpHeaders = response.headers;
     Map<String, dynamic>? responseHeader = {
       "transfer-encoding": httpHeaders.chunkedTransferEncoding,
@@ -30,12 +34,16 @@ class Response {
       "persistent-conntection": httpHeaders.persistentConnection,
       "port": httpHeaders.port
     };
+
+    Options? repsonseOptions = userOptions?.copyWith(
+        headers: responseHeader,
+        persistentConnection: response.persistentConnection,
+        contentLength: response.contentLength);
     return Response(
+        isSuccessfull: true,
         body: responseBody,
-        options: Options(headers: responseHeader),
+        options: repsonseOptions,
         statusCode: response.statusCode,
         statusMessage: response.reasonPhrase);
   }
 }
-
-//TODO: Add a solid implementation for the options in the response

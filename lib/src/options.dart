@@ -47,35 +47,60 @@ enum ResponseType {
 }
 
 class Options {
+  Options(
+      {this.method,
+      this.connectTimeout,
+      this.idleTimeout,
+      this.queryParameters,
+      this.headers,
+      // this.responseType = ResponseType.json,
+      // this.validateStatus,
+      // this.receiveDataWhenStatusError,
+      this.followRedirects = true,
+      this.maxRedirects = 5,
+      this.persistentConnection = true,
+      this.bufferOutput = true,
+      this.contentLength
+      // this.listFormat,
+      });
+
+  Options copyWith(
+          {String? method,
+          Duration? connectTimeout,
+          Duration? idleTimeout,
+          Map<String, dynamic>? queryParameters,
+          Map<String, dynamic>? headers,
+          bool? followRedirects,
+          int? maxRedirects,
+          bool? persistentConnection,
+          bool? bufferOutput,
+          int? contentLength}) =>
+      Options(
+          method: method ?? this.method,
+          connectTimeout: connectTimeout ?? this.connectTimeout,
+          idleTimeout: idleTimeout ?? this.idleTimeout,
+          queryParameters: queryParameters ?? this.queryParameters,
+          headers: headers ?? this.headers,
+          followRedirects: followRedirects ?? this.followRedirects,
+          maxRedirects: maxRedirects ?? this.maxRedirects,
+          persistentConnection:
+              persistentConnection ?? this.persistentConnection,
+          bufferOutput: bufferOutput ?? this.bufferOutput,
+          contentLength: contentLength ?? this.contentLength);
+
+  ///The method used for making the request
   String? method;
   Duration? connectTimeout;
   Duration? idleTimeout;
   Map<String, dynamic>? queryParameters;
   Map<String, dynamic>? headers;
-  ResponseType? responseType;
-  ValidateStatus? validateStatus;
-  bool? receiveDataWhenStatusError;
+  // ResponseType? responseType;
+  // ValidateStatus? validateStatus;
+  // bool? receiveDataWhenStatusError;
   bool followRedirects;
-  int? maxRedirects;
+  int maxRedirects;
   bool persistentConnection;
-  ListFormat? listFormat;
-
-  Options({
-    this.method,
-    this.connectTimeout,
-    this.idleTimeout,
-    this.queryParameters,
-    this.headers,
-    this.responseType = ResponseType.json,
-    this.validateStatus,
-    this.receiveDataWhenStatusError,
-    this.followRedirects = true,
-    this.maxRedirects,
-    this.persistentConnection = true,
-    this.listFormat,
-  });
-
-  Options fromHttpResponse(HttpClientResponse resposne) {
-    return Options();
-  }
+  bool bufferOutput;
+  int? contentLength;
+  // ListFormat? listFormat;
 }
