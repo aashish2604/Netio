@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:netio/netio.dart';
 
@@ -26,6 +28,15 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void logData(Response? response) {
+      print(response?.body);
+      print(response?.options?.contentLength);
+      print(response?.options?.method);
+      print(response?.errorMessage);
+      print(response?.statusCode);
+      print(response?.statusMessage);
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text("Netio")),
       body: Center(
@@ -37,14 +48,10 @@ class HomePage extends StatelessWidget {
                   final response = await Netio().get(
                       'https://jsonplaceholder.typicode.com/posts',
                       options: Options(
+                          queryParameters: {'userId': 1},
                           maxRedirects: 2,
                           idleTimeout: const Duration(seconds: 10)));
-                  print(response?.body);
-                  print(response?.options?.contentLength);
-                  print(response?.options?.method);
-                  print(response?.errorMessage);
-                  print(response?.statusCode);
-                  print(response?.statusMessage);
+                  logData(response);
                 },
                 child: const Text('Netio Get')),
             TextButton(
@@ -59,14 +66,33 @@ class HomePage extends StatelessWidget {
                       options: Options(headers: {
                         'Content-type': 'application/json; charset=UTF-8'
                       }));
-                  print(response?.body);
-                  print(response?.options?.contentLength);
-                  print(response?.options?.method);
-                  print(response?.errorMessage);
-                  print(response?.statusCode);
-                  print(response?.statusMessage);
+                  logData(response);
                 },
                 child: const Text('Netio Post')),
+            TextButton(
+                onPressed: () async {
+                  final response = await Netio().put(
+                      'https://jsonplaceholder.typicode.com/posts/1',
+                      body: {
+                        'id': 1,
+                        'title': 'foo',
+                        'body': 'bar',
+                        'userId': 1,
+                      },
+                      options: Options(headers: {
+                        'Content-type': 'application/json; charset=UTF-8'
+                      }));
+                  logData(response);
+                },
+                child: const Text('Netio Put')),
+            TextButton(
+                onPressed: () async {
+                  final response = await Netio().delete(
+                    'https://jsonplaceholder.typicode.com/posts/1',
+                  );
+                  logData(response);
+                },
+                child: const Text('Netio Delete')),
           ],
         ),
       ),
