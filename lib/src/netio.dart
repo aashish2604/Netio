@@ -57,8 +57,8 @@ class Netio {
 
       //processing the response
       final responseBody = await response.transform(utf8.decoder).join();
-      final parsedResponse =
-          Response.fromHttpResponse(response, responseBody, options);
+      final parsedResponse = Response.fromHttpResponse(
+          response, responseBody, options, request.method);
       return parsedResponse;
     } catch (e) {
       if (e is HttpException) {
@@ -96,8 +96,8 @@ class Netio {
       final response = await request.close();
       final responseBody = await response.transform(utf8.decoder).join();
 
-      Response parsedResponse =
-          Response.fromHttpResponse(response, responseBody, options);
+      Response parsedResponse = Response.fromHttpResponse(
+          response, responseBody, options, request.method);
       return parsedResponse;
     } catch (e) {
       if (e is HttpException) {
@@ -107,6 +107,82 @@ class Netio {
       }
     } finally {
       httpClient.close();
+    }
+  }
+
+  ///Function used making for HTTP PUT request
+  Future<Response?> put(String path,
+      {Options? options, Map<String, dynamic>? body}) async {
+    Uri url = Uri.parse(path);
+    final httpClient = HttpClient();
+    try {
+      Map<String, String>? stringQueryParameters = {};
+      options?.queryParameters?.forEach((key, value) {
+        stringQueryParameters.addAll({key: value.toString()});
+      });
+      url.replace(
+        queryParameters: stringQueryParameters,
+      );
+      initClient(httpClient, options);
+      final encodedBody = jsonEncode(body);
+
+      final uninitializedRequest = await httpClient.putUrl(url);
+      final request = initRequest(uninitializedRequest, options);
+      options?.method = request.method;
+
+      request.write(encodedBody);
+
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
+
+      Response parsedResponse = Response.fromHttpResponse(
+          response, responseBody, options, request.method);
+      return parsedResponse;
+    } catch (e) {
+      if (e is HttpException) {
+        return Response(isSuccessfull: false, errorMessage: e.message);
+      } else {
+        return null;
+      }
+    } finally {
+      httpClient.close();
+    }
+  }
+
+  ///Function used making for HTTP DELETE request
+  Future<Response?> delete(String path, {Options? options}) async {
+    Uri url = Uri.parse(path);
+    final client = HttpClient();
+    try {
+      Map<String, String>? stringQueryParameters = {};
+      options?.queryParameters?.forEach((key, value) {
+        stringQueryParameters.addAll({key: value.toString()});
+      });
+      url.replace(
+        queryParameters: stringQueryParameters,
+      );
+      //initializing the client
+      initClient(client, options);
+      //starting a request
+      final uninitializedrequest = await client.deleteUrl(url);
+      final request = initRequest(uninitializedrequest, options);
+      options?.method = request.method;
+      //closing the request
+      final response = await request.close();
+
+      //processing the response
+      final responseBody = await response.transform(utf8.decoder).join();
+      final parsedResponse = Response.fromHttpResponse(
+          response, responseBody, options, request.method);
+      return parsedResponse;
+    } catch (e) {
+      if (e is HttpException) {
+        return Response(isSuccessfull: false, errorMessage: e.message);
+      } else {
+        return null;
+      }
+    } finally {
+      client.close();
     }
   }
 }
