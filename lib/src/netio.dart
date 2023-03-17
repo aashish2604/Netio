@@ -39,8 +39,12 @@ class Netio {
     Uri url = Uri.parse(path);
     final client = HttpClient();
     try {
+      Map<String, String>? stringQueryParameters = {};
+      options?.queryParameters?.forEach((key, value) {
+        stringQueryParameters.addAll({key: value.toString()});
+      });
       url.replace(
-        queryParameters: options?.queryParameters,
+        queryParameters: stringQueryParameters,
       );
       //initializing the client
       initClient(client, options);
@@ -56,8 +60,12 @@ class Netio {
       final parsedResponse =
           Response.fromHttpResponse(response, responseBody, options);
       return parsedResponse;
-    } on HttpException catch (e) {
-      return Response(isSuccessfull: false, errorMessage: e.message);
+    } catch (e) {
+      if (e is HttpException) {
+        return Response(isSuccessfull: false, errorMessage: e.message);
+      } else {
+        return null;
+      }
     } finally {
       client.close();
     }
@@ -69,8 +77,12 @@ class Netio {
     Uri url = Uri.parse(path);
     final httpClient = HttpClient();
     try {
+      Map<String, String>? stringQueryParameters = {};
+      options?.queryParameters?.forEach((key, value) {
+        stringQueryParameters.addAll({key: value.toString()});
+      });
       url.replace(
-        queryParameters: options?.queryParameters,
+        queryParameters: stringQueryParameters,
       );
       initClient(httpClient, options);
       final encodedBody = jsonEncode(body);
@@ -87,10 +99,16 @@ class Netio {
       Response parsedResponse =
           Response.fromHttpResponse(response, responseBody, options);
       return parsedResponse;
-    } on HttpException catch (e) {
-      return Response(isSuccessfull: false, errorMessage: e.message);
+    } catch (e) {
+      if (e is HttpException) {
+        return Response(isSuccessfull: false, errorMessage: e.message);
+      } else {
+        return null;
+      }
     } finally {
       httpClient.close();
     }
   }
 }
+
+//TODO: Identifying different types of errors and handling them appropriately
