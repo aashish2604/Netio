@@ -34,7 +34,7 @@ class Netio {
     return request;
   }
 
-  /// Function used for making HTTP GET request
+  /// Use this function for making HTTP GET request
   Future<Response?> get(String path, {Options? options}) async {
     Uri url = Uri.parse(path);
     final client = HttpClient();
@@ -71,7 +71,7 @@ class Netio {
     }
   }
 
-  /// Function used for making HTTP POST request
+  /// Use this function for making HTTP POST request
   Future<Response?> post(String path,
       {Options? options, Map<String, dynamic>? body}) async {
     Uri url = Uri.parse(path);
@@ -110,7 +110,7 @@ class Netio {
     }
   }
 
-  ///Function used making for HTTP PUT request
+  ///Use this function for making HTTP PUT request
   Future<Response?> put(String path,
       {Options? options, Map<String, dynamic>? body}) async {
     Uri url = Uri.parse(path);
@@ -149,7 +149,7 @@ class Netio {
     }
   }
 
-  ///Function used making for HTTP DELETE request
+  ///Use this function for making HTTP DELETE request
   Future<Response?> delete(String path, {Options? options}) async {
     Uri url = Uri.parse(path);
     final client = HttpClient();

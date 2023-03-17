@@ -88,19 +88,41 @@ class Options {
           bufferOutput: bufferOutput ?? this.bufferOutput,
           contentLength: contentLength ?? this.contentLength);
 
-  ///The method used for making the request
+  ///This specifies the method used for making the request
   String? method;
+
+  /// The function will wait atmost this amount of time while establishing
+  /// connection to the server before throwing connection timeout
   Duration? connectTimeout;
+
+  /// Use this to specify the maximum amount of time elaspsed while processing the call.
+  /// After this time is over the call will be terminated automatically
   Duration? idleTimeout;
+
+  /// The query parameters required while making the API call
   Map<String, dynamic>? queryParameters;
+
+  /// The header which would be sent via the API call to the server in the request
   Map<String, dynamic>? headers;
   // ResponseType? responseType;
   // ValidateStatus? validateStatus;
   // bool? receiveDataWhenStatusError;
+  /// Set this property to false if this request should not automatically follow redirects. The default is true.
   bool followRedirects;
+
+  /// Set this property to the maximum number of redirects to follow when [followRedirects] is true.
+  /// If this number is exceeded an error will be thrown
   int maxRedirects;
+
+  /// Request persistant connection state. Default value: true
   bool persistentConnection;
+
+  /// Default value is true.
+  /// Disabling buffering of the output can result in very poor performance,
+  /// when writing many small chunks.
   bool bufferOutput;
+
+  /// Specifies the content length of the request
   int? contentLength;
   // ListFormat? listFormat;
 }
