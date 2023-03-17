@@ -32,7 +32,7 @@ class Response {
     };
     return Response(
         body: responseBody,
-        options: Options(headers: responseHeader, baseUrl: ''),
+        options: Options(headers: responseHeader),
         statusCode: response.statusCode,
         statusMessage: response.reasonPhrase);
   }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 typedef ProgressCallback = void Function(int count, int total);
 
 enum ListFormat {
@@ -47,35 +49,33 @@ enum ResponseType {
 class Options {
   String? method;
   Duration? connectTimeout;
-  Duration? receiveTimeout;
-  Duration? sendTimeout;
-  String baseUrl;
+  Duration? idleTimeout;
   Map<String, dynamic>? queryParameters;
-  Map<String, dynamic>? extra;
   Map<String, dynamic>? headers;
   ResponseType? responseType;
   ValidateStatus? validateStatus;
   bool? receiveDataWhenStatusError;
-  bool? followRedirects;
+  bool followRedirects;
   int? maxRedirects;
-  bool? persistentConnection;
+  bool persistentConnection;
   ListFormat? listFormat;
 
   Options({
     this.method,
     this.connectTimeout,
-    this.receiveTimeout,
-    this.sendTimeout,
-    this.baseUrl = '',
+    this.idleTimeout,
     this.queryParameters,
-    this.extra,
     this.headers,
     this.responseType = ResponseType.json,
     this.validateStatus,
     this.receiveDataWhenStatusError,
-    this.followRedirects,
+    this.followRedirects = true,
     this.maxRedirects,
-    this.persistentConnection,
+    this.persistentConnection = true,
     this.listFormat,
   });
+
+  Options fromHttpResponse(HttpClientResponse resposne) {
+    return Options();
+  }
 }
