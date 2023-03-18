@@ -31,7 +31,16 @@ Create a Netio instance.
 ```dart
 final netio = Netio();
 ```
-Perform a GET request with query parameters, a specifc maximum number of redirects along with the allowed idle timeout.
+Simple GET request
+
+```dart
+Response? response = await netio.get(
+    'https://jsonplaceholder.typicode.com/posts');
+
+print(response?.body);
+```
+
+Advanced GET request with query parameters, a specifc maximum number of redirects along with the allowed idle timeout.
 
 ```dart
 Response? response = await netio.get(
