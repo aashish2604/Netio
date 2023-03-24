@@ -185,6 +185,44 @@ class Netio {
       client.close();
     }
   }
+
+  ///Use this function for making HTTP PATCH request
+  Future<Response?> patch(String path,
+      {Options? options, Map<String, dynamic>? body}) async {
+    Uri url = Uri.parse(path);
+    final httpClient = HttpClient();
+    try {
+      Map<String, String>? stringQueryParameters = {};
+      options?.queryParameters?.forEach((key, value) {
+        stringQueryParameters.addAll({key: value.toString()});
+      });
+      url.replace(
+        queryParameters: stringQueryParameters,
+      );
+      initClient(httpClient, options);
+      final encodedBody = jsonEncode(body);
+
+      final uninitializedRequest = await httpClient.patchUrl(url);
+      final request = initRequest(uninitializedRequest, options);
+      options?.method = request.method;
+
+      request.add(utf8.encode(encodedBody));
+      final response = await request.close();
+      final responseBody = await utf8.decodeStream(response);
+
+      final parsedResponse = Response.fromHttpResponse(
+          response, responseBody, options, request.method);
+      return parsedResponse;
+    } catch (e) {
+      if (e is HttpException) {
+        return Response(isSuccessfull: false, errorMessage: e.message);
+      } else {
+        return null;
+      }
+    } finally {
+      httpClient.close();
+    }
+  }
 }
 
 //TODO: Identifying different types of errors and handling them appropriately
