@@ -223,6 +223,42 @@ class Netio {
       httpClient.close();
     }
   }
-}
 
-//TODO: Identifying different types of errors and handling them appropriately
+  ///Use this function to make HTTP HEAD request
+  Future<Response?> head(String path, {Options? options}) async {
+    Uri url = Uri.parse(path);
+    final client = HttpClient();
+    try {
+      Map<String, String>? stringQueryParameters = {};
+      options?.queryParameters?.forEach((key, value) {
+        stringQueryParameters.addAll({key: value.toString()});
+      });
+      url.replace(
+        queryParameters: stringQueryParameters,
+      );
+      //initializing the client
+      initClient(client, options);
+      //starting a request
+      final uninitializedrequest = await client.headUrl(url);
+      final request = initRequest(uninitializedrequest, options);
+      options?.method = request.method;
+      //closing the request
+      final response = await request.close();
+
+      //processing the response
+      final responseBody = await response.transform(utf8.decoder).join();
+      print(responseBody);
+      final parsedResponse =
+          Response.fromHttpResponse(response, null, options, request.method);
+      return parsedResponse;
+    } catch (e) {
+      if (e is HttpException) {
+        return Response(isSuccessfull: false, errorMessage: e.message);
+      } else {
+        return null;
+      }
+    } finally {
+      client.close();
+    }
+  }
+}
