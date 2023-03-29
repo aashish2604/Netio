@@ -92,6 +92,26 @@ Response? response = await netio.delete(
     );
 ```
 
+PATCH request
+
+```dart
+Response? response = await netio.patch(
+    'https://jsonplaceholder.typicode.com/posts/1',
+    body: {
+    'title': 'foo',
+    },
+    options: Options(headers: {
+    'Content-type': 'application/json; charset=UTF-8'
+    }));
+```
+
+HEAD request
+
+```dart
+Response? response = await netio.head(
+    'https://jsonplaceholder.typicode.com/posts');
+```
+
 ## Request Options
 
 The **Options** class describes the http request information and configuration. This specifies the additional information like the query parameters, headers, etc that are needed to be passed in the request. The **Options** declaration is as follows:
