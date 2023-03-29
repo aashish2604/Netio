@@ -93,6 +93,27 @@ class HomePage extends StatelessWidget {
                   logData(response);
                 },
                 child: const Text('Netio Delete')),
+            TextButton(
+                onPressed: () async {
+                  final response = await Netio().patch(
+                      'https://jsonplaceholder.typicode.com/posts/1',
+                      body: {
+                        'title': 'foo',
+                      },
+                      options: Options(headers: {
+                        'Content-type': 'application/json; charset=UTF-8'
+                      }));
+                  logData(response);
+                },
+                child: const Text('Netio Patch')),
+            TextButton(
+                onPressed: () async {
+                  final response = await Netio()
+                      .head('https://jsonplaceholder.typicode.com/posts');
+                  logData(response);
+                  print(response?.options?.headers);
+                },
+                child: const Text('Netio Head')),
           ],
         ),
       ),
