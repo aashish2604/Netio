@@ -179,6 +179,31 @@ The response for a request is returned as a class **Response** which contains th
   String? errorMessage;
 ```
 
+## Error Handling
+
+A request can fail due to many reasons. Whenever such an instance occurs then an error object namely **NetioError** is returned. It contains the following information.
+
+```dart
+  /// The request options for the failed request
+  final Options requestOptions;
+
+  /// The response data for the failed request
+  /// It may be `null`
+  final Response? response;
+
+  /// The error type which is thrown
+  final NetioErrorType errorType;
+
+  /// The original error/exception object;
+  final Object? error;
+
+  /// The stacktrace of the original error/exception object
+  final StackTrace? stackTrace;
+
+  /// The error message that was obtained on occurance of exception
+  final String? message;
+```
+
 For the complete code refer to the example file of this project.
 
 ## Issues
