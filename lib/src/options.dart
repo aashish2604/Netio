@@ -1,5 +1,3 @@
-import 'dart:io';
-
 typedef ProgressCallback = void Function(int count, int total);
 
 enum ListFormat {
