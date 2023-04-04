@@ -208,4 +208,4 @@ For the complete code refer to the example file of this project.
 
 ## Issues
 
-Please file any issues, bugs or feature request as an issue on the GitHub page. 
+Please file any issues, bugs or feature request as an issue on the GitHub page. If you have some idea for future upgrade, feel free to contact us.
