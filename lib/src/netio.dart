@@ -261,4 +261,41 @@ class Netio {
       client.close();
     }
   }
+
+  /// Use this function for making HTTP CONNECT request
+  Future<Response?> connect(String path, {Options? options}) async {
+    Uri url = Uri.parse(path);
+    final client = HttpClient();
+    try {
+      Map<String, String>? stringQueryParameters = {};
+      options?.queryParameters?.forEach((key, value) {
+        stringQueryParameters.addAll({key: value.toString()});
+      });
+      url.replace(
+        queryParameters: stringQueryParameters,
+      );
+      //initializing the client
+      initClient(client, options);
+      //starting a request
+      final uninitializedrequest = await client.openUrl("CONNECT", url);
+      final request = initRequest(uninitializedrequest, options);
+      options?.method = request.method;
+      //closing the request
+      final response = await request.close();
+
+      //processing the response
+      final responseBody = await response.transform(utf8.decoder).join();
+      final parsedResponse = Response.fromHttpResponse(
+          response, responseBody, options, request.method);
+      return parsedResponse;
+    } catch (e) {
+      if (e is HttpException) {
+        return Response(isSuccessfull: false, errorMessage: e.message);
+      } else {
+        return null;
+      }
+    } finally {
+      client.close();
+    }
+  }
 }

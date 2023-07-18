@@ -114,6 +114,14 @@ class HomePage extends StatelessWidget {
                   print(response?.options?.headers);
                 },
                 child: const Text('Netio Head')),
+            TextButton(
+                onPressed: () async {
+                  final response = await Netio()
+                      .connect('https://jsonplaceholder.typicode.com/posts');
+                  logData(response);
+                  print(response?.options?.headers);
+                },
+                child: const Text('Netio Connect')),
           ],
         ),
       ),
